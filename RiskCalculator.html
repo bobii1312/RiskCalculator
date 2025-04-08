@@ -1,0 +1,95 @@
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RISK CALCULATOR for US100</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background-color: #2e86de;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1e6abf;
+    }
+    .result {
+      margin-top: 20px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Kalkulator Wolumenu US100</h2>
+    <label for="capital">Kapitał konta (USD):</label>
+    <input type="number" id="capital" placeholder="np. 10000">
+
+    <label for="risk">Ryzyko (%) na trade:</label>
+    <input type="number" id="risk" placeholder="np. 0.5" step="0.1">
+
+    <label for="sl">Stop Loss (pips):</label>
+    <input type="number" id="sl" placeholder="np. 100">
+
+    <button onclick="calculateVolume()">Oblicz wolumen</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculateVolume() {
+      const capital = parseFloat(document.getElementById('capital').value);
+      const risk = parseFloat(document.getElementById('risk').value);
+      const sl = parseFloat(document.getElementById('sl').value);
+
+      if (!capital || !risk || !sl || sl === 0) {
+        document.getElementById('result').innerText = "Wprowadź wszystkie dane poprawnie.";
+        return;
+      }
+
+      const riskAmount = (capital * risk) / 100;
+      const pipValuePerLot = 1; // US100: 1 pip = $1 na 1 lot
+      const volume = riskAmount / (sl * pipValuePerLot);
+
+      document.getElementById('result').innerText = `Sugerowany wolumen: ${volume.toFixed(2)} lota`;
+    }
+  </script>
+</body>
+</html>
