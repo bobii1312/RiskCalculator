@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RISK CALCULATOR for US100</title>
+  <title>Kalkulator Ryzyka - US100 & XAUUSD</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -28,7 +28,7 @@
       display: block;
       margin-top: 10px;
     }
-    input {
+    input, select {
       width: 100%;
       padding: 8px;
       margin-top: 5px;
@@ -58,7 +58,14 @@
 </head>
 <body>
   <div class="container">
-    <h2>Kalkulator Wolumenu US100</h2>
+    <h2>Kalkulator Wolumenu</h2>
+
+    <label for="instrument">Instrument:</label>
+    <select id="instrument">
+      <option value="us100">US100</option>
+      <option value="xauusd">XAUUSD</option>
+    </select>
+
     <label for="capital">Kapitał konta (USD):</label>
     <input type="number" id="capital" placeholder="np. 10000">
 
@@ -66,7 +73,7 @@
     <input type="number" id="risk" placeholder="np. 0.5" step="0.1">
 
     <label for="sl">Stop Loss (pips):</label>
-    <input type="number" id="sl" placeholder="np. 100">
+    <input type="number" id="sl" placeholder="np. 65">
 
     <button onclick="calculateVolume()">Oblicz wolumen</button>
 
@@ -78,6 +85,7 @@
       const capital = parseFloat(document.getElementById('capital').value);
       const risk = parseFloat(document.getElementById('risk').value);
       const sl = parseFloat(document.getElementById('sl').value);
+      const instrument = document.getElementById('instrument').value;
 
       if (!capital || !risk || !sl || sl === 0) {
         document.getElementById('result').innerText = "Wprowadź wszystkie dane poprawnie.";
@@ -85,9 +93,18 @@
       }
 
       const riskAmount = (capital * risk) / 100;
-      const pipValuePerLot = 1; // US100: 1 pip = $1 na 1 lot
-      const volume = riskAmount / (sl * pipValuePerLot);
+      let pipValuePerLot;
 
+      if (instrument === 'us100') {
+        pipValuePerLot = 1; // US100: 1 pip = $1 na 1 lot
+      } else if (instrument === 'xauusd') {
+        pipValuePerLot = 10; // XAUUSD: 1 pip = $10 na 1 lot (0.01 zmiana = 1 pip)
+      } else {
+        document.getElementById('result').innerText = "Nieznany instrument.";
+        return;
+      }
+
+      const volume = riskAmount / (sl * pipValuePerLot);
       document.getElementById('result').innerText = `Sugerowany wolumen: ${volume.toFixed(2)} lota`;
     }
   </script>
